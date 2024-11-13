@@ -6,6 +6,8 @@ const path = require("path")
 const mongoose = require('mongoose');
 const methodOverride = require('method-override')
 const session = require('express-session')
+const MongoStore = require('connect-mongo');
+
 const wrapAsync=require("./utils/wrapAsync.js")
 const ExpressError=require("./utils/ExpressError")
 const engine = require('ejs-mate')
@@ -23,8 +25,23 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,"/public")))
 app.use(methodOverride('_method'))
 app.engine('ejs', engine);
+const db_url=process.env.ATLAS_DB
+
+const store=MongoStore.create({
+    
+    mongoUrl:db_url,
+    crypto:{
+        secret :"mysuperstring"
+    },
+    touchAfter:24 * 3600,
+
+})
+
+
 app.use(session(
-    {secret:process.env.SECRET,
+    {
+        store,
+        secret:"mysuperstring",
     resave:false,
     saveUninitialized:true,
     cookie : {
@@ -33,7 +50,10 @@ app.use(session(
         httpOnly : true,
     },
 }))
+
+
 app.use(flash());
+
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -60,7 +80,7 @@ app.use((req,res,next)=>{
     res.locals.currUser=req.user;
     next();
 })
-const db_url=process.env.ATLAS_DB
+
 
 const conct= async()=>{
     await mongoose.connect(db_url)
