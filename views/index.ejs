@@ -1,0 +1,41 @@
+<% layout("/layouts/boilerplate")%>
+
+<body>
+
+      <form action="task/new">
+        <button class="bg-primary">Add Task</button>
+      </form>
+      <br>
+      <div class="large">
+
+      <div id="left">
+        <div class="header"><b>TODO</b></div>
+
+   <% for(let data of datas){ %>
+    
+        <div class="list" draggable="true">
+         <h4>Task : <%=data.task%></h4>
+         <br>
+         <div class="btn-group mt-2" role="group" aria-label="Basic example" >
+            <a href="  task/<%=data._id%>"> <button type="button" class="btn btn-danger btn-secondary">View</button></a> &nbsp;&nbsp;
+            <a href= "task/edit/<%=data._id%>" >  <button type="button" class="btn btn-secondary">Edit</button></a>&nbsp;&nbsp;
+            <a href=  "task/delete/<%=data._id%>"> <button type="button" class="btn btn-secondary">Delete</button></a>
+          </div>
+ 
+        </div>
+      
+    <%}%>
+</div>
+<div id="center">
+  <div class="header"><b>INPROGRESS</b></div>
+    
+</div>
+<div id="right">
+  <div class="header"><b>DONE</b></div>
+   
+</div>
+
+</div>
+    
+<script src="indexx.js" ></script>
+</body>
